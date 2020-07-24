@@ -1,0 +1,30 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net461;netstandard2.0</TargetFrameworks>
+    <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Authors>Sean</Authors>
+    <Company>Sean Studio</Company>
+    <Copyright>Copyright © Sean Studio 2019</Copyright>
+    <Version>2.0.3-beta2020072401</Version>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Sean.Utility" Version="2.0.3-beta2020072301" />
+    <PackageReference Include="Sean.Utility.Serialize" Version="2.0.3-beta2020072201" />
+    <PackageReference Include="StackExchange.Redis" Version="2.1.58" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'net461'">
+    <Reference Include="System.Configuration" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="docs\**">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <Pack>true</Pack>
+      <PackagePath>docs</PackagePath>
+    </Content>
+  </ItemGroup>
+</Project>
