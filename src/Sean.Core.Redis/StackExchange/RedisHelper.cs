@@ -16,7 +16,7 @@ namespace Sean.Core.Redis.StackExchange
         /// 初始化
         /// </summary>
         /// <param name="logger">日志</param>
-        public static void Init(ISimpleLogger logger = null)
+        public static void Init(ILogger logger = null)
         {
             RedisClientBase.Init(null, null, logger);
         }
@@ -27,7 +27,7 @@ namespace Sean.Core.Redis.StackExchange
         /// <param name="endPoints">redis地址，示例：127.0.0.1:6379</param>
         /// <param name="password">redis密码，默认为null</param>
         /// <param name="logger">日志</param>
-        public new static void Init(List<string> endPoints, string password = null, ISimpleLogger logger = null)
+        public new static void Init(List<string> endPoints, string password = null, ILogger logger = null)
         {
             RedisClientBase.Init(endPoints, password, logger);
         }

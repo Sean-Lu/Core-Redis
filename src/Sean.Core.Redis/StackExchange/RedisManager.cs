@@ -13,7 +13,7 @@ namespace Sean.Core.Redis.StackExchange
         /// </summary>
         public static bool InitFlag { get; set; }
 
-        private static ISimpleLogger _logger;
+        private static ILogger _logger;
         private static readonly object locker = new object();
         private static ConnectionMultiplexer _instance;
         private static ConfigurationOptions _option;
@@ -59,7 +59,7 @@ namespace Sean.Core.Redis.StackExchange
             }
         }
 
-        internal static void Init(List<string> endPoints, string password = null, ISimpleLogger logger = null)
+        internal static void Init(List<string> endPoints, string password = null, ILogger logger = null)
         {
             _logger = logger;
 

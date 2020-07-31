@@ -25,7 +25,7 @@ namespace Sean.Core.Redis.StackExchange
         /// <param name="endPoints">redis地址，示例：127.0.0.1:6379</param>
         /// <param name="password">redis密码，默认为null</param>
         /// <param name="logger">日志</param>
-        protected static void Init(List<string> endPoints, string password = null, ISimpleLogger logger = null)
+        protected static void Init(List<string> endPoints, string password = null, ILogger logger = null)
         {
             RedisManager.Init(endPoints, password, logger);
 
