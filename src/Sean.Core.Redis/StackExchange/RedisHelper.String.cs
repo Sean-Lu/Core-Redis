@@ -2,15 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Sean.Core.Redis.Contracts;
 using StackExchange.Redis;
 
 namespace Sean.Core.Redis.StackExchange
 {
-    /// <summary>
-    /// Redis缓存操作（基于StackExchange.Redis）
-    /// </summary>
-    public partial class RedisHelper : ICache
+    public partial class RedisHelper
     {
         #region String: 字符串
         #region 同步执行

@@ -1,13 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Sean.Core.Redis.Contracts;
 
 namespace Sean.Core.Redis.StackExchange
 {
-    /// <summary>
-    /// Redis缓存操作（基于StackExchange.Redis）
-    /// </summary>
-    public partial class RedisHelper : ICache
+    public partial class RedisHelper
     {
         #region Sorted Set: 有序集合
         #region 同步执行

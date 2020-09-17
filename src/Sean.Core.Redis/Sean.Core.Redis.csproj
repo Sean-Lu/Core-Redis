@@ -8,11 +8,11 @@
     <Company>Sean Studio</Company>
     <Copyright>Copyright © Sean Studio 2019</Copyright>
     <Description>Redis client</Description>
-    <Version>2.0.3</Version>
+    <Version>2.0.4</Version>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Sean.Utility" Version="2.0.4" />
+    <PackageReference Include="Sean.Utility" Version="2.0.5" />
     <PackageReference Include="Sean.Utility.Serialize" Version="2.0.3" />
     <PackageReference Include="StackExchange.Redis" Version="2.1.58" />
   </ItemGroup>
@@ -21,11 +21,11 @@
     <Reference Include="System.Configuration" />
   </ItemGroup>
 
-  <ItemGroup>
+  <!--<ItemGroup>
     <Content Include="docs\**">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <Pack>true</Pack>
       <PackagePath>docs</PackagePath>
     </Content>
-  </ItemGroup>
+  </ItemGroup>-->
 </Project>

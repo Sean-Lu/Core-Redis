@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Sean.Core.Redis.Contracts;
 using Sean.Utility.Contracts;
@@ -12,13 +14,22 @@ namespace Sean.Core.Redis.StackExchange
     /// </summary>
     public partial class RedisHelper : RedisClientBase, ICache
     {
+        private static ConnectionMultiplexer _conn;
+        private static ConcurrentDictionary<int, IDatabase> _dbDic;
+
+        static RedisHelper()
+        {
+            _conn = RedisManager.Instance;
+            _dbDic = new ConcurrentDictionary<int, IDatabase>();
+        }
+
         /// <summary>
         /// 初始化
         /// </summary>
         /// <param name="logger">日志</param>
         public static void Init(ILogger logger = null)
         {
-            RedisClientBase.Init(null, null, logger);
+            Init(null, null, logger);
         }
 
         /// <summary>
@@ -27,9 +38,18 @@ namespace Sean.Core.Redis.StackExchange
         /// <param name="endPoints">redis地址，示例：127.0.0.1:6379</param>
         /// <param name="password">redis密码，默认为null</param>
         /// <param name="logger">日志</param>
-        public new static void Init(List<string> endPoints, string password = null, ILogger logger = null)
+        public static void Init(List<string> endPoints, string password = null, ILogger logger = null)
         {
-            RedisClientBase.Init(endPoints, password, logger);
+            RedisManager.Init(endPoints, password, logger);
+
+            if (endPoints != null && endPoints.Any())
+            {
+                RedisManager.InitFlag = true;
+            }
+            if (_conn == null || RedisManager.InitFlag)
+            {
+                _conn = RedisManager.Instance ?? throw new Exception("Init redis client fail.");
+            }
         }
 
         /// <summary>
@@ -40,19 +60,29 @@ namespace Sean.Core.Redis.StackExchange
         /// <param name="db">数据库索引</param>
         /// <param name="exceptionAction">处理异常的委托</param>
         /// <returns></returns>
-        public new static T Exec<T>(Func<IDatabase, T> func, int db = -1, Action<Exception> exceptionAction = null)
+        public static T Exec<T>(Func<IDatabase, T> func, int db = -1, Action<Exception> exceptionAction = null)
         {
-            return RedisClientBase.Exec(func, db, exceptionAction);
+            if (func == null) throw new ArgumentNullException(nameof(func));
+
+            try
+            {
+                return func(GetDatabase(db));
+            }
+            catch (Exception e)
+            {
+                exceptionAction?.Invoke(e);
+                return default;
+            }
         }
 
         /// <summary>
         /// 获取指定索引的数据库
         /// </summary>
-        /// <param name="db">-1表示默认数据库</param>
+        /// <param name="index">-1表示默认数据库</param>
         /// <returns></returns>
-        public new static IDatabase GetDatabase(int db = -1)
+        public static IDatabase GetDatabase(int index = -1)
         {
-            return RedisClientBase.GetDatabase(db);
+            return _dbDic.GetOrAdd(index, key => _conn.GetDatabase(key));
         }
 
         #region Lock（分布式锁）：由于 Redis 是单线程模型，命令操作原子性，所以利用这个特性可以很容易的实现分布式锁。

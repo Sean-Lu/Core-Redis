@@ -1,7 +1,7 @@
 ﻿namespace Sean.Core.Redis
 {
     /// <summary>
-    ///  序列化类型
+    /// 序列化类型
     /// </summary>
     public enum SerializeType
     {
