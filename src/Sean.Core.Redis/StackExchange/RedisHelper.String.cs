@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Sean.Core.Redis.Extensions;
 using StackExchange.Redis;
 
 namespace Sean.Core.Redis.StackExchange
@@ -19,7 +20,7 @@ namespace Sean.Core.Redis.StackExchange
         /// <returns></returns>
         public static bool StringSet(string key, string val, TimeSpan? expiry = null)
         {
-            return Exec(db => db.StringSet(key, val, expiry));
+            return Execute(db => db.StringSet(key, val, expiry));
         }
 
         /// <summary>
@@ -30,7 +31,7 @@ namespace Sean.Core.Redis.StackExchange
         public static bool StringSet(List<KeyValuePair<RedisKey, RedisValue>> keyValues)
         {
             List<KeyValuePair<RedisKey, RedisValue>> newkey = keyValues.Select(k => new KeyValuePair<RedisKey, RedisValue>(k.Key, k.Value)).ToList();
-            return Exec(db => db.StringSet(newkey.ToArray()));
+            return Execute(db => db.StringSet(newkey.ToArray()));
         }
 
         /// <summary>
@@ -43,8 +44,7 @@ namespace Sean.Core.Redis.StackExchange
         /// <returns></returns>
         public static bool StringSet<T>(string key, T value, TimeSpan? expiry = null)
         {
-            var json = ToJson(value);
-            return Exec(db => db.StringSet(key, json, expiry));
+            return Execute(db => db.StringSet(key, value.ToRedisValue(_serializeType), expiry));
         }
 
         /// <summary>
@@ -54,7 +54,7 @@ namespace Sean.Core.Redis.StackExchange
         /// <returns></returns>
         public static string StringGet(string key)
         {
-            return Exec(db => db.StringGet(key));
+            return Execute(db => db.StringGet(key));
         }
         /// <summary>
         /// 获取单个对象
@@ -64,8 +64,7 @@ namespace Sean.Core.Redis.StackExchange
         /// <returns></returns>
         public static T StringGet<T>(string key)
         {
-            var val = Exec(db => db.StringGet(key));
-            return ToModel<T>(val);
+            return Execute<T>(db => db.StringGet(key));
         }
 
         /// <summary>
@@ -76,7 +75,7 @@ namespace Sean.Core.Redis.StackExchange
         /// <returns>增长后的值</returns>
         public static double StringIncrement(string key, double val = 1)
         {
-            return Exec(db => db.StringIncrement(key, val));
+            return Execute(db => db.StringIncrement(key, val));
         }
         /// <summary>
         /// 为数字减少val
@@ -86,7 +85,7 @@ namespace Sean.Core.Redis.StackExchange
         /// <returns>增长后的值</returns>
         public static double StringDecrement(string key, double val = 1)
         {
-            return Exec(db => db.StringDecrement(key, val));
+            return Execute(db => db.StringDecrement(key, val));
         }
         #endregion
 
@@ -100,7 +99,7 @@ namespace Sean.Core.Redis.StackExchange
         /// <returns></returns>
         public static async Task<bool> StringSetAsync(string key, string val, TimeSpan? expiry = null)
         {
-            return await Exec(db => db.StringSetAsync(key, val, expiry));
+            return await ExecuteAsync(db => db.StringSetAsync(key, val, expiry));
         }
         /// <summary>
         /// 异步保存多个key value
@@ -109,8 +108,8 @@ namespace Sean.Core.Redis.StackExchange
         /// <returns></returns>
         public static async Task<bool> StringSetAsync(List<KeyValuePair<RedisKey, RedisValue>> keyValues)
         {
-            List<KeyValuePair<RedisKey, RedisValue>> newkey = keyValues.Select(k => new KeyValuePair<RedisKey, RedisValue>(k.Key, k.Value)).ToList();
-            return await Exec(db => db.StringSetAsync(newkey.ToArray()));
+            var newkey = keyValues.Select(k => new KeyValuePair<RedisKey, RedisValue>(k.Key, k.Value)).ToList();
+            return await ExecuteAsync(db => db.StringSetAsync(newkey.ToArray()));
         }
 
         /// <summary>
@@ -118,13 +117,12 @@ namespace Sean.Core.Redis.StackExchange
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="key"></param>
-        /// <param name="obj"></param>
+        /// <param name="value"></param>
         /// <param name="expiry"></param>
         /// <returns></returns>
-        public static async Task<bool> StringSetAsync<T>(string key, T obj, TimeSpan? expiry = null)
+        public static async Task<bool> StringSetAsync<T>(string key, T value, TimeSpan? expiry = null)
         {
-            string json = ToJson(obj);
-            return await Exec(db => db.StringSetAsync(key, json, expiry));
+            return await ExecuteAsync(db => db.StringSetAsync(key, value.ToRedisValue(_serializeType), expiry));
         }
 
         /// <summary>
@@ -134,7 +132,7 @@ namespace Sean.Core.Redis.StackExchange
         /// <returns></returns>
         public static async Task<string> StringGetAsync(string key)
         {
-            return await Exec(db => db.StringGetAsync(key));
+            return await ExecuteAsync(db => db.StringGetAsync(key));
         }
 
         /// <summary>
@@ -144,8 +142,7 @@ namespace Sean.Core.Redis.StackExchange
         /// <returns></returns>
         public static async Task<T> StringGetAsync<T>(string key)
         {
-            var val = await Exec(db => db.StringGetAsync(key));
-            return ToModel<T>(val);
+            return await ExecuteAsync<T>(db => db.StringGetAsync(key));
         }
 
         /// <summary>
@@ -156,7 +153,7 @@ namespace Sean.Core.Redis.StackExchange
         /// <returns>增长后的值</returns>
         public static async Task<double> StringIncrementAsync(string key, double val = 1)
         {
-            return await Exec(db => db.StringIncrementAsync(key, val));
+            return await ExecuteAsync(db => db.StringIncrementAsync(key, val));
         }
         /// <summary>
         /// 为数字减少val
@@ -166,7 +163,7 @@ namespace Sean.Core.Redis.StackExchange
         /// <returns>增长后的值</returns>
         public static async Task<double> StringDecrementAsync(string key, double val = 1)
         {
-            return await Exec(db => db.StringDecrementAsync(key, val));
+            return await ExecuteAsync(db => db.StringDecrementAsync(key, val));
         }
         #endregion
         #endregion

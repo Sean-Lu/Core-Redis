@@ -17,7 +17,7 @@ namespace Sean.Core.Redis.StackExchange
         /// <returns></returns>
         public static bool KeyExists(string key)
         {
-            return Exec(db => db.KeyExists(key));
+            return Execute(db => db.KeyExists(key));
         }
 
         /// <summary>
@@ -27,7 +27,7 @@ namespace Sean.Core.Redis.StackExchange
         /// <returns></returns>
         public static bool KeyDelete(string key)
         {
-            return Exec(db => db.KeyDelete(key));
+            return Execute(db => db.KeyDelete(key));
         }
         /// <summary>
         /// 删除多个Key
@@ -41,7 +41,7 @@ namespace Sean.Core.Redis.StackExchange
                 return -1;
             }
 
-            return Exec(db => db.KeyDelete(keys.Select(c => (RedisKey)c).ToArray()));
+            return Execute(db => db.KeyDelete(keys.Select(c => (RedisKey)c).ToArray()));
         }
 
         /// <summary>
@@ -52,7 +52,7 @@ namespace Sean.Core.Redis.StackExchange
         /// <returns></returns>
         public static bool KeyRename(string key, string newKey)
         {
-            return Exec(db => db.KeyRename(key, newKey));
+            return Execute(db => db.KeyRename(key, newKey));
         }
 
         /// <summary>
@@ -63,7 +63,7 @@ namespace Sean.Core.Redis.StackExchange
         /// <returns></returns>
         public static bool KeyExpire(string key, DateTime? expiry)
         {
-            return Exec(db => db.KeyExpire(key, expiry));
+            return Execute(db => db.KeyExpire(key, expiry));
         }
         /// <summary>
         /// 设置Key的时间
@@ -73,7 +73,7 @@ namespace Sean.Core.Redis.StackExchange
         /// <returns></returns>
         public static bool KeyExpire(string key, TimeSpan? expiry)
         {
-            return Exec(db => db.KeyExpire(key, expiry));
+            return Execute(db => db.KeyExpire(key, expiry));
         }
 
         /// <summary>
@@ -85,7 +85,7 @@ namespace Sean.Core.Redis.StackExchange
         {
             // Redis TTL 命令 - 以秒为单位，返回给定 key 的剩余生存时间(TTL, time to live)。
             // 当 key 存在但没有设置剩余生存时间时，返回 -1 。
-            return Exec(db => db.KeyTimeToLive(key));
+            return Execute(db => db.KeyTimeToLive(key));
         }
         #endregion
 
@@ -97,7 +97,7 @@ namespace Sean.Core.Redis.StackExchange
         /// <returns></returns>
         public static async Task<bool> KeyExistsAsync(string key)
         {
-            return await Exec(db => db.KeyExistsAsync(key));
+            return await ExecuteAsync(db => db.KeyExistsAsync(key));
         }
 
         /// <summary>
@@ -107,7 +107,7 @@ namespace Sean.Core.Redis.StackExchange
         /// <returns></returns>
         public static async Task<bool> KeyDeleteAsync(string key)
         {
-            return await Exec(db => db.KeyDeleteAsync(key));
+            return await ExecuteAsync(db => db.KeyDeleteAsync(key));
         }
 
         /// <summary>
@@ -117,12 +117,7 @@ namespace Sean.Core.Redis.StackExchange
         /// <returns></returns>
         public static async Task<long> KeyDeleteAsync(List<string> keys)
         {
-            if (keys == null)
-            {
-                return -1;
-            }
-
-            return await Exec(db => db.KeyDeleteAsync(keys.Select(c => (RedisKey)c).ToArray()));
+            return await ExecuteAsync(db => db.KeyDeleteAsync(keys.Select(c => (RedisKey)c).ToArray()));
         }
 
         /// <summary>
@@ -133,7 +128,7 @@ namespace Sean.Core.Redis.StackExchange
         /// <returns></returns>
         public static async Task<bool> KeyRenameAsync(string key, string newKey)
         {
-            return await Exec(db => db.KeyRenameAsync(key, newKey));
+            return await ExecuteAsync(db => db.KeyRenameAsync(key, newKey));
         }
 
         /// <summary>
@@ -144,7 +139,7 @@ namespace Sean.Core.Redis.StackExchange
         /// <returns></returns>
         public static async Task<bool> KeyExpireAsync(string key, DateTime? expiry)
         {
-            return await Exec(db => db.KeyExpireAsync(key, expiry));
+            return await ExecuteAsync(db => db.KeyExpireAsync(key, expiry));
         }
         /// <summary>
         /// 异步设置Key的时间
@@ -154,7 +149,7 @@ namespace Sean.Core.Redis.StackExchange
         /// <returns></returns>
         public static async Task<bool> KeyExpireAsync(string key, TimeSpan? expiry)
         {
-            return await Exec(db => db.KeyExpireAsync(key, expiry));
+            return await ExecuteAsync(db => db.KeyExpireAsync(key, expiry));
         }
 
         /// <summary>
@@ -164,7 +159,7 @@ namespace Sean.Core.Redis.StackExchange
         /// <returns></returns>
         public static async Task<TimeSpan?> KeyTimeToLiveAsync(string key)
         {
-            return await Exec(db => db.KeyTimeToLiveAsync(key));
+            return await ExecuteAsync(db => db.KeyTimeToLiveAsync(key));
         }
         #endregion
         #endregion

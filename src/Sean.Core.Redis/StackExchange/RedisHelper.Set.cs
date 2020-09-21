@@ -14,7 +14,7 @@ namespace Sean.Core.Redis.StackExchange
         /// <returns></returns>
         public static bool SetAdd(string key, string val)
         {
-            return Exec(db => db.SetAdd(key, val));
+            return Execute(db => db.SetAdd(key, val));
         }
 
         /// <summary>
@@ -24,7 +24,7 @@ namespace Sean.Core.Redis.StackExchange
         /// <returns></returns>
         public static long SetLength(string key)
         {
-            return Exec(db => db.SetLength(key));
+            return Execute(db => db.SetLength(key));
         }
 
         /// <summary>
@@ -35,7 +35,7 @@ namespace Sean.Core.Redis.StackExchange
         /// <returns></returns>
         public static bool SetContains(string key, string val)
         {
-            return Exec(db => db.SetContains(key, val));
+            return Execute(db => db.SetContains(key, val));
         }
 
         /// <summary>
@@ -46,7 +46,7 @@ namespace Sean.Core.Redis.StackExchange
         /// <returns></returns>
         public static bool SetRemove(string key, string val)
         {
-            return Exec(db => db.SetRemove(key, val));
+            return Execute(db => db.SetRemove(key, val));
         }
         #endregion
 
@@ -59,7 +59,7 @@ namespace Sean.Core.Redis.StackExchange
         /// <returns></returns>
         public static async Task<bool> SetAddAsync(string key, string val)
         {
-            return await Exec(db => db.SetAddAsync(key, val));
+            return await ExecuteAsync(db => db.SetAddAsync(key, val));
         }
 
         /// <summary>
@@ -69,7 +69,7 @@ namespace Sean.Core.Redis.StackExchange
         /// <returns></returns>
         public static async Task<long> SetLengthAsync(string key)
         {
-            return await Exec(db => db.SetLengthAsync(key));
+            return await ExecuteAsync(db => db.SetLengthAsync(key));
         }
 
         /// <summary>
@@ -80,7 +80,7 @@ namespace Sean.Core.Redis.StackExchange
         /// <returns></returns>
         public static async Task<bool> SetContainsAsync(string key, string val)
         {
-            return await Exec(db => db.SetContainsAsync(key, val));
+            return await ExecuteAsync(db => db.SetContainsAsync(key, val));
         }
 
         /// <summary>
@@ -91,7 +91,7 @@ namespace Sean.Core.Redis.StackExchange
         /// <returns></returns>
         public static async Task<bool> SetRemoveAsync(string key, string val)
         {
-            return await Exec(db => db.SetRemoveAsync(key, val));
+            return await ExecuteAsync(db => db.SetRemoveAsync(key, val));
         }
         #endregion
         #endregion

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
 using Sean.Utility.Contracts;
@@ -8,50 +9,25 @@ namespace Sean.Core.Redis.StackExchange
 {
     internal class RedisManager
     {
-        /// <summary>
-        /// 初始化标志
-        /// </summary>
-        public static bool InitFlag { get; set; }
-
         private static ILogger _logger;
         private static readonly object locker = new object();
         private static ConnectionMultiplexer _instance;
         private static ConfigurationOptions _option;
 
         /// <summary>
-        /// redis连接超时时间
-        /// </summary>
-        private static int? _connectTimeout;
-
-        static RedisManager()
-        {
-            Init(null);
-        }
-
-        /// <summary>
-        /// 通过线程安全的单例模式来获取redis连接实例
+        /// 获取redis连接实例（线程安全）
         /// </summary>
         public static ConnectionMultiplexer Instance
         {
             get
             {
-                if (_instance == null || InitFlag)
+                if (_instance == null)
                 {
                     lock (locker)
                     {
-                        if (_instance == null || InitFlag)
+                        if (_instance == null)
                         {
-                            if (_instance != null && InitFlag)
-                            {
-                                // 释放资源
-                                _instance.Dispose();
-                                _instance = null;
-                                _logger?.LogInfo($"重新初始化Redis连接，释放之前的{nameof(ConnectionMultiplexer)}资源");
-                            }
-
                             _instance = GetManager();
-
-                            InitFlag = false;
                         }
                     }
                 }
@@ -59,46 +35,48 @@ namespace Sean.Core.Redis.StackExchange
             }
         }
 
-        internal static void Init(List<string> endPoints, string password = null, ILogger logger = null)
+        public static void Init(RedisConfigOptions options)
         {
-            _logger = logger;
+            if (options == null) throw new ArgumentNullException(nameof(options));
 
-            if (endPoints == null || !endPoints.Any())
+            _option = new ConfigurationOptions();
+
+            if (string.IsNullOrWhiteSpace(options.EndPoints))
             {
-                if (_option == null)
+                var endPoints = ConfigurationManager.AppSettings["RedisServer"];
+                var pwd = ConfigurationManager.AppSettings["RedisPwd"];
+
+                if (!string.IsNullOrWhiteSpace(endPoints))
                 {
-                    var endPoint = ConfigurationManager.AppSettings["RedisServer"];
-                    var pwd = ConfigurationManager.AppSettings["RedisPwd"];
-
-                    if (!string.IsNullOrWhiteSpace(endPoint))
-                    {
-                        _option = new ConfigurationOptions
-                        {
-                            EndPoints = { endPoint },
-                            Password = pwd
-                        };
-
-                        if (_connectTimeout.HasValue)
-                        {
-                            _option.ConnectTimeout = _connectTimeout.Value;
-                        }
-                    }
+                    options.EndPoints = endPoints;
+                    options.Password = pwd;
                 }
             }
-            else
-            {
-                if (_option == null)
-                {
-                    _option = new ConfigurationOptions();
-                }
 
-                _option.EndPoints.Clear();
-                endPoints.ForEach(c =>
+            _option.EndPoints.Clear();
+            options.EndPoints?.Split(new[] { "," }, StringSplitOptions.RemoveEmptyEntries).Select(c => c.Trim()).ToList().ForEach(c =>
+            {
+                if (!string.IsNullOrWhiteSpace(c))
                 {
                     _option.EndPoints.Add(c);
-                });
-                _option.Password = password;
+                }
+            });
+            _option.Password = options.Password;
+
+            if (options.ConnectTimeout.HasValue)
+            {
+                _option.ConnectTimeout = options.ConnectTimeout.Value;
             }
+            if (options.SyncTimeout.HasValue)
+            {
+                _option.SyncTimeout = options.SyncTimeout.Value;
+            }
+            if (options.AsyncTimeout.HasValue)
+            {
+                _option.AsyncTimeout = options.AsyncTimeout.Value;
+            }
+
+            _logger = options.Logger;
         }
 
         /// <summary>

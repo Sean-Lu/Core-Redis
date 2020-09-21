@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Sean.Core.Redis.Extensions;
 using StackExchange.Redis;
 
 namespace Sean.Core.Redis.StackExchange
@@ -18,7 +19,7 @@ namespace Sean.Core.Redis.StackExchange
         /// <param name="val"></param>
         public static long ListRemove<T>(string key, T val)
         {
-            return Exec(db => db.ListRemove(key, ToJson(val)));
+            return Execute(db => db.ListRemove(key, val.ToRedisValue(_serializeType)));
         }
 
         /// <summary>
@@ -31,11 +32,7 @@ namespace Sean.Core.Redis.StackExchange
         /// <returns></returns>
         public static List<T> ListRange<T>(string key, long start = 0, long stop = -1)
         {
-            return Exec(db =>
-            {
-                var val = db.ListRange(key, start, stop);
-                return ToModelList<T>(val);
-            });
+            return Execute<T>(db => db.ListRange(key, start, stop));
         }
 
         /// <summary>
@@ -46,7 +43,7 @@ namespace Sean.Core.Redis.StackExchange
         /// <param name="val"></param>
         public static long ListRightPush<T>(string key, T val)
         {
-            return Exec(db => db.ListRightPush(key, ToJson(val)));
+            return Execute(db => db.ListRightPush(key, val.ToRedisValue(_serializeType)));
         }
         /// <summary>
         /// 批量插入（入队）
@@ -56,7 +53,7 @@ namespace Sean.Core.Redis.StackExchange
         /// <param name="val"></param>
         public static long ListRightPush<T>(string key, IList<T> val)
         {
-            return Exec(db => db.ListRightPush(key, val.Select(c => RedisValue.Unbox(ToJson(c))).ToArray()));
+            return Execute(db => db.ListRightPush(key, val.Select(c => RedisValue.Unbox(c.ToRedisValue(_serializeType))).ToArray()));
         }
 
         /// <summary>
@@ -67,11 +64,7 @@ namespace Sean.Core.Redis.StackExchange
         /// <returns></returns>
         public static T ListRightPop<T>(string key)
         {
-            return Exec(db =>
-            {
-                var val = db.ListRightPop(key);
-                return ToModel<T>(val);
-            });
+            return Execute<T>(db => db.ListRightPop(key));
         }
 
         /// <summary>
@@ -80,9 +73,9 @@ namespace Sean.Core.Redis.StackExchange
         /// <typeparam name="T"></typeparam>
         /// <param name="key"></param>
         /// <param name="val"></param>
-        public static void ListLeftPush<T>(string key, T val)
+        public static long ListLeftPush<T>(string key, T val)
         {
-            Exec(db => db.ListLeftPush(key, ToJson(val)));
+            return Execute(db => db.ListLeftPush(key, val.ToRedisValue(_serializeType)));
         }
         /// <summary>
         /// 批量入栈
@@ -92,7 +85,7 @@ namespace Sean.Core.Redis.StackExchange
         /// <param name="val"></param>
         public static long ListLeftPush<T>(string key, IList<T> val)
         {
-            return Exec(db => db.ListLeftPush(key, val.Select(c => RedisValue.Unbox(ToJson(c))).ToArray()));
+            return Execute(db => db.ListLeftPush(key, val.Select(c => RedisValue.Unbox(c.ToRedisValue(_serializeType))).ToArray()));
         }
 
         /// <summary>
@@ -103,11 +96,7 @@ namespace Sean.Core.Redis.StackExchange
         /// <returns></returns>
         public static T ListLeftPop<T>(string key)
         {
-            return Exec(db =>
-            {
-                var val = db.ListLeftPop(key);
-                return ToModel<T>(val);
-            });
+            return Execute<T>(db => db.ListLeftPop(key));
         }
 
         /// <summary>
@@ -117,7 +106,7 @@ namespace Sean.Core.Redis.StackExchange
         /// <returns></returns>
         public static long GetListLength(string key)
         {
-            return Exec(db => db.ListLength(key));
+            return Execute(db => db.ListLength(key));
         }
         #endregion
 
@@ -130,7 +119,7 @@ namespace Sean.Core.Redis.StackExchange
         /// <param name="val"></param>
         public static async Task<long> ListRemoveAsync<T>(string key, T val)
         {
-            return await Exec(db => db.ListRemoveAsync(key, ToJson(val)));
+            return await ExecuteAsync(db => db.ListRemoveAsync(key, val.ToRedisValue(_serializeType)));
         }
 
         /// <summary>
@@ -141,8 +130,7 @@ namespace Sean.Core.Redis.StackExchange
         /// <returns></returns>
         public static async Task<List<T>> ListRangeAsync<T>(string key)
         {
-            var val = await Exec(db => db.ListRangeAsync(key));
-            return ToModelList<T>(val);
+            return await ExecuteAsync<T>(db => db.ListRangeAsync(key));
         }
 
         /// <summary>
@@ -153,7 +141,7 @@ namespace Sean.Core.Redis.StackExchange
         /// <param name="val"></param>
         public static async Task<long> ListRightPushAsync<T>(string key, T val)
         {
-            return await Exec(db => db.ListRightPushAsync(key, ToJson(val)));
+            return await ExecuteAsync(db => db.ListRightPushAsync(key, val.ToRedisValue(_serializeType)));
         }
         /// <summary>
         /// 异步批量插入（入队）
@@ -163,7 +151,7 @@ namespace Sean.Core.Redis.StackExchange
         /// <param name="val"></param>
         public static async Task<long> ListRightPushAsync<T>(string key, IList<T> val)
         {
-            return await Exec(db => db.ListRightPushAsync(key, val.Select(c => RedisValue.Unbox(ToJson(c))).ToArray()));
+            return await ExecuteAsync(db => db.ListRightPushAsync(key, val.Select(c => RedisValue.Unbox(c.ToRedisValue(_serializeType))).ToArray()));
         }
 
         /// <summary>
@@ -174,8 +162,7 @@ namespace Sean.Core.Redis.StackExchange
         /// <returns></returns>
         public static async Task<T> ListRightPopAsync<T>(string key)
         {
-            var val = await Exec(db => db.ListRightPopAsync(key));
-            return ToModel<T>(val);
+            return await ExecuteAsync<T>(db => db.ListRightPopAsync(key));
         }
 
         /// <summary>
@@ -186,7 +173,7 @@ namespace Sean.Core.Redis.StackExchange
         /// <param name="val"></param>
         public static async Task<long> ListLeftPushAsync<T>(string key, T val)
         {
-            return await Exec(db => db.ListLeftPushAsync(key, ToJson(val)));
+            return await ExecuteAsync(db => db.ListLeftPushAsync(key, val.ToRedisValue(_serializeType)));
         }
         /// <summary>
         /// 异步批量入栈
@@ -196,7 +183,7 @@ namespace Sean.Core.Redis.StackExchange
         /// <param name="val"></param>
         public static async Task<long> ListLeftPushAsync<T>(string key, IList<T> val)
         {
-            return await Exec(db => db.ListLeftPushAsync(key, val.Select(c => RedisValue.Unbox(ToJson(c))).ToArray()));
+            return await ExecuteAsync(db => db.ListLeftPushAsync(key, val.Select(c => RedisValue.Unbox(c.ToRedisValue(_serializeType))).ToArray()));
         }
 
         /// <summary>
@@ -207,8 +194,7 @@ namespace Sean.Core.Redis.StackExchange
         /// <returns></returns>
         public static async Task<T> ListLeftPopAsync<T>(string key)
         {
-            var val = await Exec(db => db.ListLeftPopAsync(key));
-            return ToModel<T>(val);
+            return await ExecuteAsync<T>(db => db.ListLeftPopAsync(key));
         }
 
         /// <summary>
@@ -218,7 +204,7 @@ namespace Sean.Core.Redis.StackExchange
         /// <returns></returns>
         public static async Task<long> GetListLengthAsync(string key)
         {
-            return await Exec(db => db.ListLengthAsync(key));
+            return await ExecuteAsync(db => db.ListLengthAsync(key));
         }
         #endregion
 

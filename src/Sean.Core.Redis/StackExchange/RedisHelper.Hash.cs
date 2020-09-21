@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using Sean.Core.Redis.Extensions;
 using StackExchange.Redis;
 
 namespace Sean.Core.Redis.StackExchange
@@ -16,7 +17,7 @@ namespace Sean.Core.Redis.StackExchange
         /// <returns></returns>
         public static bool HashExists(string key, string dataKey)
         {
-            return Exec(db => db.HashExists(key, dataKey));
+            return Execute(db => db.HashExists(key, dataKey));
         }
 
         /// <summary>
@@ -29,11 +30,7 @@ namespace Sean.Core.Redis.StackExchange
         /// <returns></returns>
         public static bool HashSet<T>(string key, string dataKey, T val)
         {
-            return Exec(db =>
-            {
-                string json = ToJson(val);
-                return db.HashSet(key, dataKey, json);
-            });
+            return Execute(db => db.HashSet(key, dataKey, val.ToRedisValue(_serializeType)));
         }
 
         /// <summary>
@@ -44,7 +41,7 @@ namespace Sean.Core.Redis.StackExchange
         /// <returns></returns>
         public static bool HashDelete(string key, string dataKey)
         {
-            return Exec(db => db.HashDelete(key, dataKey));
+            return Execute(db => db.HashDelete(key, dataKey));
         }
 
         /// <summary>
@@ -55,7 +52,7 @@ namespace Sean.Core.Redis.StackExchange
         /// <returns></returns>
         public static long HashRemove(string key, List<RedisValue> dataKey)
         {
-            return Exec(db => db.HashDelete(key, dataKey.ToArray()));
+            return Execute(db => db.HashDelete(key, dataKey.ToArray()));
         }
 
         /// <summary>
@@ -67,11 +64,7 @@ namespace Sean.Core.Redis.StackExchange
         /// <returns></returns>
         public static T HashGet<T>(string key, string dataKey)
         {
-            return Exec(db =>
-            {
-                var val = db.HashGet(key, dataKey);
-                return ToModel<T>(val);
-            });
+            return Execute<T>(db => db.HashGet(key, dataKey));
         }
 
         /// <summary>
@@ -83,7 +76,7 @@ namespace Sean.Core.Redis.StackExchange
         /// <returns></returns>
         public static double HashIncrement(string key, string dataKey, double val = 1)
         {
-            return Exec(db => db.HashIncrement(key, dataKey, val));
+            return Execute(db => db.HashIncrement(key, dataKey, val));
         }
 
         /// <summary>
@@ -95,7 +88,7 @@ namespace Sean.Core.Redis.StackExchange
         /// <returns></returns>
         public static double HashDecrement(string key, string dataKey, double val = 1)
         {
-            return Exec(db => db.HashDecrement(key, dataKey, val));
+            return Execute(db => db.HashDecrement(key, dataKey, val));
         }
 
         /// <summary>
@@ -106,11 +99,7 @@ namespace Sean.Core.Redis.StackExchange
         /// <returns></returns>
         public static List<T> HashKeys<T>(string key)
         {
-            return Exec(db =>
-            {
-                var val = db.HashKeys(key);
-                return ToModelList<T>(val);
-            });
+            return Execute<T>(db => db.HashKeys(key));
         }
         #endregion
 
@@ -123,7 +112,7 @@ namespace Sean.Core.Redis.StackExchange
         /// <returns></returns>
         public static async Task<bool> HashExistsAsync(string key, string dataKey)
         {
-            return await Exec(db => db.HashExistsAsync(key, dataKey));
+            return await ExecuteAsync(db => db.HashExistsAsync(key, dataKey));
         }
 
         /// <summary>
@@ -136,11 +125,7 @@ namespace Sean.Core.Redis.StackExchange
         /// <returns></returns>
         public static async Task<bool> HashSetAsync<T>(string key, string dataKey, T val)
         {
-            return await Exec(db =>
-            {
-                string json = ToJson(val);
-                return db.HashSetAsync(key, dataKey, json);
-            });
+            return await ExecuteAsync(db => db.HashSetAsync(key, dataKey, val.ToRedisValue(_serializeType)));
         }
 
         /// <summary>
@@ -151,7 +136,7 @@ namespace Sean.Core.Redis.StackExchange
         /// <returns></returns>
         public static async Task<bool> HashDeleteAsync(string key, string dataKey)
         {
-            return await Exec(db => db.HashDeleteAsync(key, dataKey));
+            return await ExecuteAsync(db => db.HashDeleteAsync(key, dataKey));
         }
 
         /// <summary>
@@ -162,7 +147,7 @@ namespace Sean.Core.Redis.StackExchange
         /// <returns></returns>
         public static async Task<long> HashRemoveAsync(string key, List<RedisValue> dataKey)
         {
-            return await Exec(db => db.HashDeleteAsync(key, dataKey.ToArray()));
+            return await ExecuteAsync(db => db.HashDeleteAsync(key, dataKey.ToArray()));
         }
 
         /// <summary>
@@ -174,8 +159,7 @@ namespace Sean.Core.Redis.StackExchange
         /// <returns></returns>
         public static async Task<T> HashGetAsync<T>(string key, string dataKey)
         {
-            string val = await Exec(db => db.HashGetAsync(key, dataKey));
-            return ToModel<T>(val);
+            return await ExecuteAsync<T>(db => db.HashGetAsync(key, dataKey));
         }
 
         /// <summary>
@@ -187,7 +171,7 @@ namespace Sean.Core.Redis.StackExchange
         /// <returns></returns>
         public static async Task<double> HashIncrementAsync(string key, string dataKey, double val = 1)
         {
-            return await Exec(db => db.HashIncrementAsync(key, dataKey, val));
+            return await ExecuteAsync(db => db.HashIncrementAsync(key, dataKey, val));
         }
 
         /// <summary>
@@ -199,7 +183,7 @@ namespace Sean.Core.Redis.StackExchange
         /// <returns></returns>
         public static async Task<double> HashDecrementAsync(string key, string dataKey, double val = 1)
         {
-            return await Exec(db => db.HashDecrementAsync(key, dataKey, val));
+            return await ExecuteAsync(db => db.HashDecrementAsync(key, dataKey, val));
         }
 
         /// <summary>
@@ -210,8 +194,7 @@ namespace Sean.Core.Redis.StackExchange
         /// <returns></returns>
         public static async Task<List<T>> HashKeysAsync<T>(string key)
         {
-            var val = await Exec(db => db.HashKeysAsync(key));
-            return ToModelList<T>(val);
+            return await ExecuteAsync<T>(db => db.HashKeysAsync(key));
         }
         #endregion
         #endregion

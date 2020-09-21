@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using Sean.Core.Redis.Extensions;
 
 namespace Sean.Core.Redis.StackExchange
 {
@@ -16,7 +17,7 @@ namespace Sean.Core.Redis.StackExchange
         /// <returns></returns>
         public static bool SortedSetExists<T>(string key, T val)
         {
-            var rank = Exec(db => db.SortedSetRank(key, ToJson<T>(val)));
+            var rank = Execute(db => db.SortedSetRank(key, val.ToRedisValue(_serializeType)));
             return rank.HasValue && rank.Value >= 0;
         }
 
@@ -30,7 +31,7 @@ namespace Sean.Core.Redis.StackExchange
         /// <returns></returns>
         public static bool SortedSetAdd<T>(string key, T val, double score)
         {
-            return Exec(db => db.SortedSetAdd(key, ToJson<T>(val), score));
+            return Execute(db => db.SortedSetAdd(key, val.ToRedisValue(_serializeType), score));
         }
 
         /// <summary>
@@ -42,7 +43,7 @@ namespace Sean.Core.Redis.StackExchange
         /// <returns></returns>
         public static bool SortedSetRemove<T>(string key, T val)
         {
-            return Exec(db => db.SortedSetRemove(key, ToJson<T>(val)));
+            return Execute(db => db.SortedSetRemove(key, val.ToRedisValue(_serializeType)));
         }
 
         /// <summary>
@@ -55,11 +56,7 @@ namespace Sean.Core.Redis.StackExchange
         /// <returns></returns>
         public static List<T> SortedSetRangeByRank<T>(string key, long start = 0, long stop = -1)
         {
-            return Exec(db =>
-            {
-                var val = db.SortedSetRangeByRank(key, start, stop);
-                return ToModelList<T>(val);
-            });
+            return Execute<T>(db => db.SortedSetRangeByRank(key, start, stop));
         }
 
         /// <summary>
@@ -69,7 +66,7 @@ namespace Sean.Core.Redis.StackExchange
         /// <returns></returns>
         public static long SortedSetLength(string key)
         {
-            return Exec(db => db.SortedSetLength(key));
+            return Execute(db => db.SortedSetLength(key));
 
         }
         #endregion
@@ -84,7 +81,7 @@ namespace Sean.Core.Redis.StackExchange
         /// <returns></returns>
         public static async Task<bool> SortedSetExistsAsync<T>(string key, T val)
         {
-            var rank = await Exec(db => db.SortedSetRankAsync(key, ToJson<T>(val)));
+            var rank = await ExecuteAsync(db => db.SortedSetRankAsync(key, val.ToRedisValue(_serializeType)));
             return rank.HasValue && rank.Value >= 0;
         }
 
@@ -98,7 +95,7 @@ namespace Sean.Core.Redis.StackExchange
         /// <returns></returns>
         public static async Task<bool> SortedSetAddAsync<T>(string key, T val, double score)
         {
-            return await Exec(db => db.SortedSetAddAsync(key, ToJson<T>(val), score));
+            return await ExecuteAsync(db => db.SortedSetAddAsync(key, val.ToRedisValue(_serializeType), score));
         }
 
         /// <summary>
@@ -110,7 +107,7 @@ namespace Sean.Core.Redis.StackExchange
         /// <returns></returns>
         public static async Task<bool> SortedSetRemoveAsync<T>(string key, T val)
         {
-            return await Exec(db => db.SortedSetRemoveAsync(key, ToJson<T>(val)));
+            return await ExecuteAsync(db => db.SortedSetRemoveAsync(key, val.ToRedisValue(_serializeType)));
         }
 
         /// <summary>
@@ -123,8 +120,7 @@ namespace Sean.Core.Redis.StackExchange
         /// <returns></returns>
         public static async Task<List<T>> SortedSetRangeByRankAsync<T>(string key, long start = 0, long stop = -1)
         {
-            var val = await Exec(db => db.SortedSetRangeByRankAsync(key, start, stop));
-            return ToModelList<T>(val);
+            return await ExecuteAsync<T>(db => db.SortedSetRangeByRankAsync(key, start, stop));
         }
 
         /// <summary>
@@ -134,7 +130,7 @@ namespace Sean.Core.Redis.StackExchange
         /// <returns></returns>
         public static async Task<long> SortedSetLengthAsync(string key)
         {
-            return await Exec(db => db.SortedSetLengthAsync(key));
+            return await ExecuteAsync(db => db.SortedSetLengthAsync(key));
 
         }
         #endregion

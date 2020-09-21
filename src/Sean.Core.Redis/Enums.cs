@@ -6,12 +6,12 @@
     public enum SerializeType
     {
         /// <summary>
-        /// 二进制格式
-        /// </summary>
-        Binary,
-        /// <summary>
         /// Json格式
         /// </summary>
         Json,
+        /// <summary>
+        /// 二进制格式
+        /// </summary>
+        Binary
     }
 }
