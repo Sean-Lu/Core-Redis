@@ -18,15 +18,15 @@ namespace Sean.Core.Redis.StackExchange
         public string Password { get; set; }
 
         /// <summary>
-        /// redis连接超时时间（默认：5秒）
+        /// redis连接超时时间（单位：毫秒，默认：5秒）
         /// </summary>
         public int? ConnectTimeout { get; set; }
         /// <summary>
-        /// redis同步操作超时时间（默认：5秒）
+        /// redis同步操作超时时间（单位：毫秒，默认：5秒）
         /// </summary>
         public int? SyncTimeout { get; set; }
         /// <summary>
-        /// redis异步操作超时时间（默认：5秒）
+        /// redis异步操作超时时间（单位：毫秒，默认：5秒）
         /// </summary>
         public int? AsyncTimeout { get; set; }
 
