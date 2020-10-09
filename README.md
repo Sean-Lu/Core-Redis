@@ -1,6 +1,26 @@
-# Redis配置示例
+## 简介
 
-> Framework：`app.config`、`web.config`
+> 基于[`StackExchange.Redis`](https://github.com/StackExchange/StackExchange.Redis)封装的Redis客户端
+
+- 支持`.Net Framework`、`.Net Core`
+- 支持同步、异步操作（async\await）
+- 使用简单，方便扩展
+
+## Nuget包引用
+
+> **Id：Sean.Core.Redis**
+
+- Package Manager
+
+```
+PM> Install-Package Sean.Core.Redis
+```
+
+## Redis配置示例
+
+> **如果Redis是集群部署的话，地址用","分隔即可。**
+
+- Framework：`app.config`、`web.config`
 
 ```
 <appSettings>
@@ -9,7 +29,7 @@
 </appSettings>
 ```
 
-> Net Core：`appsettings.json`
+- Net Core：`appsettings.json`
 
 ```
 {
@@ -19,3 +39,7 @@
   }
 }
 ```
+
+## 使用示例
+
+> 项目：test\Demo.NetCore
