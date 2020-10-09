@@ -9,6 +9,7 @@
     <Copyright>Copyright © Sean Studio 2019</Copyright>
     <Description>Redis client</Description>
     <Version>2.0.5</Version>
+    <PackageProjectUrl>https://github.com/Sean-Lu/Core-Redis.git</PackageProjectUrl>
   </PropertyGroup>
 
   <ItemGroup>
