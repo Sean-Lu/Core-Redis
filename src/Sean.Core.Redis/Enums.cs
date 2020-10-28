@@ -1,16 +1,16 @@
 ﻿namespace Sean.Core.Redis
 {
     /// <summary>
-    /// 序列化类型
+    /// Serialization type
     /// </summary>
     public enum SerializeType
     {
         /// <summary>
-        /// Json格式
+        /// Json format
         /// </summary>
         Json,
         /// <summary>
-        /// 二进制格式
+        /// Binary format
         /// </summary>
         Binary
     }

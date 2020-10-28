@@ -7,16 +7,19 @@ using StackExchange.Redis;
 
 namespace Sean.Core.Redis.Extensions
 {
+    /// <summary>
+    /// Extension of <see cref="RedisValue"/>
+    /// </summary>
     public static class RedisValueExtensions
     {
-        private static BinarySerializer _binarySerializer = new BinarySerializer();
+        private static readonly BinarySerializer BinarySerializer = new BinarySerializer();
 
         /// <summary>
-        /// 转换为<see cref="RedisValue"/>
+        /// Convert to <see cref="RedisValue"/>
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="model"></param>
-        /// <param name="serializeType"></param>
+        /// <param name="serializeType">Serialization type</param>
         /// <returns></returns>
         public static RedisValue ToRedisValue<T>(this T model, SerializeType serializeType = SerializeType.Json)
         {
@@ -29,20 +32,32 @@ namespace Sean.Core.Redis.Extensions
             switch (serializeType)
             {
                 case SerializeType.Binary:
-                    return _binarySerializer.Serialize(model);
+                    return BinarySerializer.Serialize(model);
                 case SerializeType.Json:
-                    return JsonHelper.Serialize(model);
+                    return JsonHelper.Serialize(model);//RedisValue.Unbox(xxx);
                 default:
-                    throw new NotSupportedException($"not supported for serialize type [{serializeType}]");
+                    throw new NotSupportedException($"Not yet supported for serialize type [{serializeType}]");
             }
         }
 
         /// <summary>
-        /// 转换为对象
+        /// Convert to <see cref="RedisValue"/> array
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="model"></param>
+        /// <param name="serializeType">Serialization type</param>
+        /// <returns></returns>
+        public static RedisValue[] ToRedisValueArray<T>(this IList<T> model, SerializeType serializeType = SerializeType.Json)
+        {
+            return model?.Select(c => c.ToRedisValue(serializeType)).ToArray();
+        }
+
+        /// <summary>
+        /// Convert to model object
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="value"></param>
-        /// <param name="serializeType"></param>
+        /// <param name="serializeType">Serialization type</param>
         /// <returns></returns>
         public static T ToModel<T>(this RedisValue value, SerializeType serializeType = SerializeType.Json)
         {
@@ -54,20 +69,20 @@ namespace Sean.Core.Redis.Extensions
             switch (serializeType)
             {
                 case SerializeType.Binary:
-                    return _binarySerializer.Deserialize<T>(value);
+                    return BinarySerializer.Deserialize<T>(value);
                 case SerializeType.Json:
                     return JsonHelper.Deserialize<T>(value);
                 default:
-                    throw new NotSupportedException($"not supported for serialize type [{serializeType}]");
+                    throw new NotSupportedException($"Not yet supported for serialize type [{serializeType}]");
             }
         }
 
         /// <summary>
-        /// 转换为对象集合
+        /// Convert to model object list
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="value"></param>
-        /// <param name="serializeType"></param>
+        /// <param name="serializeType">Serialization type</param>
         /// <returns></returns>
         public static List<T> ToModelList<T>(this RedisValue[] value, SerializeType serializeType = SerializeType.Json)
         {

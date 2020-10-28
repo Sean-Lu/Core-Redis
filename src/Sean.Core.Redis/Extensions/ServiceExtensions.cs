@@ -2,7 +2,6 @@
 using System;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Sean.Core.Redis.StackExchange;
 
 namespace Sean.Core.Redis.Extensions
 {
