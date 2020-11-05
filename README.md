@@ -6,6 +6,12 @@
 - 支持同步、异步操作（async\await）
 - 使用简单，方便扩展
 
+## Packages
+
+| Package | NuGet Stable | NuGet Pre-release | Downloads | MyGet |
+| ------- | ------------ | ----------------- | --------- | ----- |
+| [Sean.Core.Redis](https://www.nuget.org/packages/Sean.Core.Redis/) | [![Sean.Core.Redis](https://img.shields.io/nuget/v/Sean.Core.Redis.svg)](https://www.nuget.org/packages/Sean.Core.Redis/) | [![Sean.Core.Redis](https://img.shields.io/nuget/vpre/Sean.Core.Redis.svg)](https://www.nuget.org/packages/Sean.Core.Redis/) | [![Sean.Core.Redis](https://img.shields.io/nuget/dt/Sean.Core.Redis.svg)](https://www.nuget.org/packages/Sean.Core.Redis/) | [![Sean.Core.Redis MyGet](https://img.shields.io/myget/sean/vpre/Sean.Core.Redis.svg)](https://www.myget.org/feed/sean/package/nuget/Sean.Core.Redis) |
+
 ## Nuget包引用
 
 > **Id：Sean.Core.Redis**
