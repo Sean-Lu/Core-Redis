@@ -32,7 +32,7 @@ PM> Install-Package Sean.Core.Redis
 
 > **如果Redis是集群部署的话，地址用","分隔即可。**
 
-- Framework：`app.config`、`web.config`
+- .NET Framework：`app.config`、`web.config`
 
 ```
 <appSettings>
@@ -41,7 +41,7 @@ PM> Install-Package Sean.Core.Redis
 </appSettings>
 ```
 
-- Net Core：`appsettings.json`
+- .NET Core：`appsettings.json`
 
 ```
 {
