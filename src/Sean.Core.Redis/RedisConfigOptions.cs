@@ -38,6 +38,5 @@ namespace Sean.Core.Redis
         /// Log
         /// </summary>
         public ILogger Logger { get; set; }
-
     }
 }

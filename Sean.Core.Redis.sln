@@ -5,9 +5,9 @@ VisualStudioVersion = 16.0.30309.148
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sean.Core.Redis", "src\Sean.Core.Redis\Sean.Core.Redis.csproj", "{A9370BE4-BD95-4516-BB14-B8D2AD1308C4}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{F925F06F-2FB2-4C7C-8043-84CDF5CAD21E}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Examples", "Examples", "{F925F06F-2FB2-4C7C-8043-84CDF5CAD21E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Demo.NetCore", "test\Demo.NetCore\Demo.NetCore.csproj", "{062669A4-7DA1-470B-850D-406DF9A807E1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Example.NetCore", "examples\Example.NetCore\Example.NetCore.csproj", "{062669A4-7DA1-470B-850D-406DF9A807E1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

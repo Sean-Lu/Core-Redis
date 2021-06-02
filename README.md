@@ -54,7 +54,7 @@ PM> Install-Package Sean.Core.Redis
 
 ## 使用示例
 
-> 项目：test\Demo.NetCore
+> 项目：`examples\Example.NetCore`
 
 1. Redis初始化：不使用DI注入
 
@@ -73,14 +73,14 @@ RedisHelper.Init(options =>
 1. Redis初始化：使用DI注入（推荐）
 
 ```
-ServiceManager.ConfigureServices(services =>
+IocContainer.Instance.ConfigureServices(services =>
 {
     services.AddTransient(typeof(ISimpleLogger<>), typeof(SimpleLocalLogger<>));
 });
-ServiceManager.ConfigureServices(services =>
+IocContainer.Instance.ConfigureServices(services =>
 {
-    var configuration = ServiceManager.GetService<IConfiguration>();
-    var logger = ServiceManager.GetService<ISimpleLogger<RedisHelper>>();
+    var configuration = IocContainer.Instance.GetService<IConfiguration>();
+    var logger = IocContainer.Instance.GetService<ISimpleLogger<RedisHelper>>();
     services.AddRedis(configuration, options =>
     {
         options.ConnectTimeout = 10000;
@@ -97,7 +97,7 @@ ServiceManager.ConfigureServices(services =>
 
 ```
 var cacheKey = "test";
-Console.WriteLine($"添加string缓存：{RedisHelper.StringSet(cacheKey, new Test { Id = 1001, Name = "Sean" }, TimeSpan.FromSeconds(20))}");
+Console.WriteLine($"添加string缓存：{RedisHelper.StringSet(cacheKey, new TestModel { Id = 1001, Name = "Sean" }, TimeSpan.FromSeconds(20))}");
 Console.WriteLine($"同步获取缓存：{JsonHelper.Serialize(RedisHelper.StringGet<Test>(cacheKey))}");
 Console.WriteLine($"异步获取缓存：{JsonHelper.Serialize(RedisHelper.StringGetAsync<Test>(cacheKey).Result)}");
 Console.WriteLine($"手动删除缓存：{RedisHelper.KeyDelete(cacheKey)}");
@@ -109,9 +109,9 @@ Console.WriteLine($"手动删除缓存：{RedisHelper.KeyDelete(cacheKey)}");
 var cacheKeyListQueue = "testListQueue";
 var list = new List<Test>
 {
-    new Test { Id = 1002, Name = "aaa" },
-    new Test { Id = 1003, Name = "bbb" },
-    new Test { Id = 1004, Name = "ccc" },
+    new TestModel { Id = 1002, Name = "aaa" },
+    new TestModel { Id = 1003, Name = "bbb" },
+    new TestModel { Id = 1004, Name = "ccc" },
 };
 Console.WriteLine($"添加list缓存：{RedisHelper.ListRightPush(cacheKeyListQueue, list)}");
 Console.WriteLine($"设置缓存超时时间：{RedisHelper.KeyExpire(cacheKeyListQueue, TimeSpan.FromSeconds(20))}");
