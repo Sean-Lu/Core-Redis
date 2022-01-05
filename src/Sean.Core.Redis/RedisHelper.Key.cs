@@ -7,8 +7,6 @@ namespace Sean.Core.Redis
 {
     public partial class RedisHelper
     {
-        // Key
-
         #region Synchronization method
         /// <summary>
         /// Returns if key exists.

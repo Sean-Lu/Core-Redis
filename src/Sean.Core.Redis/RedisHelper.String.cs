@@ -9,8 +9,6 @@ namespace Sean.Core.Redis
 {
     public partial class RedisHelper
     {
-        // String: 字符串
-
         #region Synchronization method
         /// <summary>
         /// Set key to hold the string value. If key already holds a value, it is overwritten, regardless of its type.
@@ -21,7 +19,7 @@ namespace Sean.Core.Redis
         /// <returns>True if the string was set, false otherwise.</returns>
         public static bool StringSet<T>(string key, T value, TimeSpan? expiry = null)
         {
-            return Execute(db => db.StringSet(key, value.ToRedisValue(_defaultSerializeType), expiry));
+            return Execute(db => db.StringSet(key, value.ToRedisValue(RedisManager.DefaultSerializeType), expiry));
         }
 
         /// <summary>
@@ -75,7 +73,7 @@ namespace Sean.Core.Redis
         /// <returns>True if the string was set, false otherwise.</returns>
         public static async Task<bool> StringSetAsync<T>(string key, T value, TimeSpan? expiry = null)
         {
-            return await ExecuteAsync(db => db.StringSetAsync(key, value.ToRedisValue(_defaultSerializeType), expiry));
+            return await ExecuteAsync(db => db.StringSetAsync(key, value.ToRedisValue(RedisManager.DefaultSerializeType), expiry));
         }
 
         /// <summary>

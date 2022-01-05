@@ -6,8 +6,6 @@ namespace Sean.Core.Redis
 {
     public partial class RedisHelper
     {
-        // Hash: 散列
-
         #region Synchronization method
         /// <summary>
         /// Returns if field is an existing field in the hash stored at key.
@@ -30,7 +28,7 @@ namespace Sean.Core.Redis
         /// <returns>Return true if field is a new field in the hash and value was set. Return false if field already exists in the hash and the value was updated.</returns>
         public static bool HashSet<T>(string key, string hashField, T value)
         {
-            return Execute(db => db.HashSet(key, hashField, value.ToRedisValue(_defaultSerializeType)));
+            return Execute(db => db.HashSet(key, hashField, value.ToRedisValue(RedisManager.DefaultSerializeType)));
         }
 
         /// <summary>
@@ -52,7 +50,7 @@ namespace Sean.Core.Redis
         /// <returns>The number of fields that were removed.</returns>
         public static long HashDelete(string key, IList<string> hashFields)
         {
-            return Execute(db => db.HashDelete(key, hashFields.ToRedisValueArray(_defaultSerializeType)));
+            return Execute(db => db.HashDelete(key, hashFields.ToRedisValueArray(RedisManager.DefaultSerializeType)));
         }
 
         /// <summary>
@@ -124,7 +122,7 @@ namespace Sean.Core.Redis
         /// <returns>Return true if field is a new field in the hash and value was set. Return false if field already exists in the hash and the value was updated.</returns>
         public static async Task<bool> HashSetAsync<T>(string key, string hashField, T value)
         {
-            return await ExecuteAsync(db => db.HashSetAsync(key, hashField, value.ToRedisValue(_defaultSerializeType)));
+            return await ExecuteAsync(db => db.HashSetAsync(key, hashField, value.ToRedisValue(RedisManager.DefaultSerializeType)));
         }
 
         /// <summary>
@@ -146,7 +144,7 @@ namespace Sean.Core.Redis
         /// <returns>The number of fields that were removed.</returns>
         public static async Task<long> HashDeleteAsync(string key, IList<string> hashFields)
         {
-            return await ExecuteAsync(db => db.HashDeleteAsync(key, hashFields.ToRedisValueArray(_defaultSerializeType)));
+            return await ExecuteAsync(db => db.HashDeleteAsync(key, hashFields.ToRedisValueArray(RedisManager.DefaultSerializeType)));
         }
 
         /// <summary>

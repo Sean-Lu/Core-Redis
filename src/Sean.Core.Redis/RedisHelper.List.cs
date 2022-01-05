@@ -8,8 +8,6 @@ namespace Sean.Core.Redis
 {
     public partial class RedisHelper
     {
-        // List: 列表
-
         #region Synchronization method
         /// <summary>
         /// Remove all elements equal to value from the list stored at key.
@@ -20,7 +18,7 @@ namespace Sean.Core.Redis
         /// <returns>The number of removed elements.</returns>
         public static long ListRemove<T>(string key, T value)
         {
-            return Execute(db => db.ListRemove(key, value.ToRedisValue(_defaultSerializeType)));
+            return Execute(db => db.ListRemove(key, value.ToRedisValue(RedisManager.DefaultSerializeType)));
         }
 
         /// <summary>
@@ -45,7 +43,7 @@ namespace Sean.Core.Redis
         /// <returns>The length of the list after the push operation.</returns>
         public static long ListRightPush<T>(string key, T value)
         {
-            return Execute(db => db.ListRightPush(key, value.ToRedisValue(_defaultSerializeType)));
+            return Execute(db => db.ListRightPush(key, value.ToRedisValue(RedisManager.DefaultSerializeType)));
         }
         /// <summary>
         /// Insert all the specified values at the tail of the list stored at key. If key does not exist, it is created as empty list before performing the push operation. Elements are inserted one after the other to the tail of the list, from the leftmost element to the rightmost element. So for instance the command RPUSH mylist a b c will result into a list containing a as first element, b as second element and c as third element.
@@ -56,7 +54,7 @@ namespace Sean.Core.Redis
         /// <returns>The length of the list after the push operation.</returns>
         public static long ListRightPush<T>(string key, List<T> values)
         {
-            return Execute(db => db.ListRightPush(key, values.ToRedisValueArray(_defaultSerializeType)));
+            return Execute(db => db.ListRightPush(key, values.ToRedisValueArray(RedisManager.DefaultSerializeType)));
         }
 
         /// <summary>
@@ -79,7 +77,7 @@ namespace Sean.Core.Redis
         /// <returns>The length of the list after the push operation.</returns>
         public static long ListLeftPush<T>(string key, T value)
         {
-            return Execute(db => db.ListLeftPush(key, value.ToRedisValue(_defaultSerializeType)));
+            return Execute(db => db.ListLeftPush(key, value.ToRedisValue(RedisManager.DefaultSerializeType)));
         }
         /// <summary>
         /// Insert all the specified values at the head of the list stored at key. If key does not exist, it is created as empty list before performing the push operations. Elements are inserted one after the other to the head of the list, from the leftmost element to the rightmost element. So for instance the command LPUSH mylist a b c will result into a list containing c as first element, b as second element and a as third element.
@@ -90,7 +88,7 @@ namespace Sean.Core.Redis
         /// <returns>The length of the list after the push operation.</returns>
         public static long ListLeftPush<T>(string key, List<T> values)
         {
-            return Execute(db => db.ListLeftPush(key, values.ToRedisValueArray(_defaultSerializeType)));
+            return Execute(db => db.ListLeftPush(key, values.ToRedisValueArray(RedisManager.DefaultSerializeType)));
         }
 
         /// <summary>
@@ -125,7 +123,7 @@ namespace Sean.Core.Redis
         /// <returns>The number of removed elements.</returns>
         public static async Task<long> ListRemoveAsync<T>(string key, T value)
         {
-            return await ExecuteAsync(db => db.ListRemoveAsync(key, value.ToRedisValue(_defaultSerializeType)));
+            return await ExecuteAsync(db => db.ListRemoveAsync(key, value.ToRedisValue(RedisManager.DefaultSerializeType)));
         }
 
         /// <summary>
@@ -150,7 +148,7 @@ namespace Sean.Core.Redis
         /// <returns>The length of the list after the push operation.</returns>
         public static async Task<long> ListRightPushAsync<T>(string key, T value)
         {
-            return await ExecuteAsync(db => db.ListRightPushAsync(key, value.ToRedisValue(_defaultSerializeType)));
+            return await ExecuteAsync(db => db.ListRightPushAsync(key, value.ToRedisValue(RedisManager.DefaultSerializeType)));
         }
         /// <summary>
         /// Insert all the specified values at the tail of the list stored at key. If key does not exist, it is created as empty list before performing the push operation. Elements are inserted one after the other to the tail of the list, from the leftmost element to the rightmost element. So for instance the command RPUSH mylist a b c will result into a list containing a as first element, b as second element and c as third element.
@@ -161,7 +159,7 @@ namespace Sean.Core.Redis
         /// <returns>The length of the list after the push operation.</returns>
         public static async Task<long> ListRightPushAsync<T>(string key, List<T> values)
         {
-            return await ExecuteAsync(db => db.ListRightPushAsync(key, values.ToRedisValueArray(_defaultSerializeType)));
+            return await ExecuteAsync(db => db.ListRightPushAsync(key, values.ToRedisValueArray(RedisManager.DefaultSerializeType)));
         }
 
         /// <summary>
@@ -184,7 +182,7 @@ namespace Sean.Core.Redis
         /// <returns>The length of the list after the push operation.</returns>
         public static async Task<long> ListLeftPushAsync<T>(string key, T value)
         {
-            return await ExecuteAsync(db => db.ListLeftPushAsync(key, value.ToRedisValue(_defaultSerializeType)));
+            return await ExecuteAsync(db => db.ListLeftPushAsync(key, value.ToRedisValue(RedisManager.DefaultSerializeType)));
         }
         /// <summary>
         /// Insert all the specified values at the head of the list stored at key. If key does not exist, it is created as empty list before performing the push operations. Elements are inserted one after the other to the head of the list, from the leftmost element to the rightmost element. So for instance the command LPUSH mylist a b c will result into a list containing c as first element, b as second element and a as third element.
@@ -195,7 +193,7 @@ namespace Sean.Core.Redis
         /// <returns>The length of the list after the push operation.</returns>
         public static async Task<long> ListLeftPushAsync<T>(string key, List<T> values)
         {
-            return await ExecuteAsync(db => db.ListLeftPushAsync(key, values.ToRedisValueArray(_defaultSerializeType)));
+            return await ExecuteAsync(db => db.ListLeftPushAsync(key, values.ToRedisValueArray(RedisManager.DefaultSerializeType)));
         }
 
         /// <summary>

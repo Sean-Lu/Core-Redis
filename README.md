@@ -14,8 +14,8 @@
 
 ## Packages
 
-| Package | NuGet Stable | NuGet Pre-release | Downloads | MyGet |
-| ------- | ------------ | ----------------- | --------- | ----- |
+| Package                                                            | NuGet Stable                                                                                                              | NuGet Pre-release                                                                                                            | Downloads                                                                                                                  | MyGet                                                                                                                                                 |
+| ------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
 | [Sean.Core.Redis](https://www.nuget.org/packages/Sean.Core.Redis/) | [![Sean.Core.Redis](https://img.shields.io/nuget/v/Sean.Core.Redis.svg)](https://www.nuget.org/packages/Sean.Core.Redis/) | [![Sean.Core.Redis](https://img.shields.io/nuget/vpre/Sean.Core.Redis.svg)](https://www.nuget.org/packages/Sean.Core.Redis/) | [![Sean.Core.Redis](https://img.shields.io/nuget/dt/Sean.Core.Redis.svg)](https://www.nuget.org/packages/Sean.Core.Redis/) | [![Sean.Core.Redis MyGet](https://img.shields.io/myget/sean/vpre/Sean.Core.Redis.svg)](https://www.myget.org/feed/sean/package/nuget/Sean.Core.Redis) |
 
 ## Nuget包引用
@@ -24,7 +24,7 @@
 
 - Package Manager
 
-```
+```powershell
 PM> Install-Package Sean.Core.Redis
 ```
 
@@ -34,20 +34,22 @@ PM> Install-Package Sean.Core.Redis
 
 - .NET Framework：`app.config`、`web.config`
 
-```
+```xml
 <appSettings>
-	<add key="RedisServer" value="127.0.0.1:6379" />
-	<add key="RedisPwd" value="" />
+    <add key="RedisEndPoints" value="127.0.0.1:6379" />
+    <add key="RedisPassword" value="" />
+    <add key="RedisDefaultSerializeType" value="0" />
 </appSettings>
 ```
 
 - .NET Core：`appsettings.json`
 
-```
+```json
 {
   "Redis": {
-    "endPoints": "127.0.0.1:6379",
-    "pwd": ""
+    "EndPoints": "127.0.0.1:6379",
+    "Password": "",
+    "DefaultSerializeType": 0,
   }
 }
 ```
@@ -56,46 +58,32 @@ PM> Install-Package Sean.Core.Redis
 
 > 项目：`examples\Example.NetCore`
 
-1. Redis初始化：不使用DI注入
+1. Redis初始化
+- 不使用依赖注入
 
-```
-var endPoint = "127.0.0.1:6379";
-RedisHelper.Init(options =>
+```csharp
+// 示例1：
+RedisManager.Initialize(configuration);
+
+// 示例2：
+RedisManager.Initialize(new RedisClientOptions
 {
-    options.EndPoints = endPoint;
-    options.ConnectTimeout = 10000;
-    options.SyncTimeout = 15000;
-    options.AsyncTimeout = 15000;
-    options.Logger = new SimpleLocalLogger<RedisHelper>();
+  EndPoints = "127.0.0.1:6379",
+  Password = string.Empty,
+  DefaultSerializeType = SerializeType.Json
 });
 ```
 
-1. Redis初始化：使用DI注入（推荐）
+- 使用依赖注入（推荐）
 
-```
-IocContainer.Instance.ConfigureServices(services =>
-{
-    services.AddTransient(typeof(ISimpleLogger<>), typeof(SimpleLocalLogger<>));
-});
-IocContainer.Instance.ConfigureServices(services =>
-{
-    var configuration = IocContainer.Instance.GetService<IConfiguration>();
-    var logger = IocContainer.Instance.GetService<ISimpleLogger<RedisHelper>>();
-    services.AddRedis(configuration, options =>
-    {
-        options.ConnectTimeout = 10000;
-        options.SyncTimeout = 15000;
-        options.AsyncTimeout = 15000;
-        options.Logger = logger;
-    });
-});
+```csharp
+services.AddRedis(configuration);
 ```
 
 2. Redis使用示例
+- string => 最简单的用法
 
-- 2.1 string => 最简单的用法
-
-```
+```csharp
 var cacheKey = "test";
 Console.WriteLine($"添加string缓存：{RedisHelper.StringSet(cacheKey, new TestModel { Id = 1001, Name = "Sean" }, TimeSpan.FromSeconds(20))}");
 Console.WriteLine($"同步获取缓存：{JsonHelper.Serialize(RedisHelper.StringGet<Test>(cacheKey))}");
@@ -103,9 +91,9 @@ Console.WriteLine($"异步获取缓存：{JsonHelper.Serialize(RedisHelper.Strin
 Console.WriteLine($"手动删除缓存：{RedisHelper.KeyDelete(cacheKey)}");
 ```
 
-- 2.2 list => 实现队列（先进先出）
+- list => 实现队列（先进先出）
 
-```
+```csharp
 var cacheKeyListQueue = "testListQueue";
 var list = new List<Test>
 {
@@ -120,9 +108,9 @@ Console.WriteLine($"获取缓存：{JsonHelper.Serialize(RedisHelper.ListLeftPop
 Console.WriteLine($"获取缓存：{JsonHelper.Serialize(RedisHelper.ListLeftPop<Test>(cacheKeyListQueue))}");
 ```
 
-- 2.3 list => 实现堆栈（先进后出）
+- list => 实现堆栈（先进后出）
 
-```
+```csharp
 var cacheKeyListStack = "testListStack";
 Console.WriteLine($"添加list缓存：{RedisHelper.ListLeftPush(cacheKeyListStack, list)}");
 Console.WriteLine($"设置缓存超时时间：{RedisHelper.KeyExpire(cacheKeyListStack, TimeSpan.FromSeconds(20))}");

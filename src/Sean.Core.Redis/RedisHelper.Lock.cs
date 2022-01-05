@@ -5,8 +5,6 @@ namespace Sean.Core.Redis
 {
     public partial class RedisHelper
     {
-        // Lock（分布式锁）：由于 Redis 是单线程模型，命令操作原子性，所以利用这个特性可以很容易的实现分布式锁。
-
         #region Synchronization method
         /// <summary>
         /// Takes a lock (specifying a token value) if it is not already taken.

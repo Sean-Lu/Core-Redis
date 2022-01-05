@@ -7,8 +7,6 @@ namespace Sean.Core.Redis
 {
     public partial class RedisHelper
     {
-        // Sorted Set: 有序集合
-
         #region Synchronization method
         /// <summary>
         /// Returns the rank of member in the sorted set stored at key, by default with the scores ordered from low to high. The rank (or index) is 0-based, which means that the member with the lowest score has rank 0.
@@ -20,7 +18,7 @@ namespace Sean.Core.Redis
         /// <returns>If member exists in the sorted set, the rank of member; If member does not exist in the sorted set or key does not exist, null</returns>
         public static long? SortedSetRank<T>(string key, T member, Order order = Order.Ascending)
         {
-            return Execute(db => db.SortedSetRank(key, member.ToRedisValue(_defaultSerializeType), order));
+            return Execute(db => db.SortedSetRank(key, member.ToRedisValue(RedisManager.DefaultSerializeType), order));
         }
 
         /// <summary>
@@ -32,7 +30,7 @@ namespace Sean.Core.Redis
         /// <returns>True if member exists in the sorted set; False otherwise.</returns>
         public static bool SortedSetExists<T>(string key, T member)
         {
-            var rank = Execute(db => db.SortedSetRank(key, member.ToRedisValue(_defaultSerializeType)));
+            var rank = Execute(db => db.SortedSetRank(key, member.ToRedisValue(RedisManager.DefaultSerializeType)));
             return rank.HasValue && rank.Value >= 0;
         }
 
@@ -46,7 +44,7 @@ namespace Sean.Core.Redis
         /// <returns>True if the value was added, False if it already existed (the score is still updated)</returns>
         public static bool SortedSetAdd<T>(string key, T member, double score)
         {
-            return Execute(db => db.SortedSetAdd(key, member.ToRedisValue(_defaultSerializeType), score));
+            return Execute(db => db.SortedSetAdd(key, member.ToRedisValue(RedisManager.DefaultSerializeType), score));
         }
 
         /// <summary>
@@ -58,7 +56,7 @@ namespace Sean.Core.Redis
         /// <returns>True if the member existed in the sorted set and was removed; False otherwise.</returns>
         public static bool SortedSetRemove<T>(string key, T member)
         {
-            return Execute(db => db.SortedSetRemove(key, member.ToRedisValue(_defaultSerializeType)));
+            return Execute(db => db.SortedSetRemove(key, member.ToRedisValue(RedisManager.DefaultSerializeType)));
         }
 
         /// <summary>
@@ -97,7 +95,7 @@ namespace Sean.Core.Redis
         /// <returns>If member exists in the sorted set, the rank of member; If member does not exist in the sorted set or key does not exist, null</returns>
         public static async Task<long?> SortedSetRankAsync<T>(string key, T member, Order order = Order.Ascending)
         {
-            return await ExecuteAsync(db => db.SortedSetRankAsync(key, member.ToRedisValue(_defaultSerializeType), order));
+            return await ExecuteAsync(db => db.SortedSetRankAsync(key, member.ToRedisValue(RedisManager.DefaultSerializeType), order));
         }
 
         /// <summary>
@@ -109,7 +107,7 @@ namespace Sean.Core.Redis
         /// <returns>True if member exists in the sorted set; False otherwise.</returns>
         public static async Task<bool> SortedSetExistsAsync<T>(string key, T member)
         {
-            var rank = await Execute(db => db.SortedSetRankAsync(key, member.ToRedisValue(_defaultSerializeType)));
+            var rank = await Execute(db => db.SortedSetRankAsync(key, member.ToRedisValue(RedisManager.DefaultSerializeType)));
             return rank.HasValue && rank.Value >= 0;
         }
 
@@ -123,7 +121,7 @@ namespace Sean.Core.Redis
         /// <returns>True if the value was added, False if it already existed (the score is still updated)</returns>
         public static async Task<bool> SortedSetAddAsync<T>(string key, T member, double score)
         {
-            return await ExecuteAsync(db => db.SortedSetAddAsync(key, member.ToRedisValue(_defaultSerializeType), score));
+            return await ExecuteAsync(db => db.SortedSetAddAsync(key, member.ToRedisValue(RedisManager.DefaultSerializeType), score));
         }
 
         /// <summary>
@@ -135,7 +133,7 @@ namespace Sean.Core.Redis
         /// <returns>True if the member existed in the sorted set and was removed; False otherwise.</returns>
         public static async Task<bool> SortedSetRemoveAsync<T>(string key, T member)
         {
-            return await ExecuteAsync(db => db.SortedSetRemoveAsync(key, member.ToRedisValue(_defaultSerializeType)));
+            return await ExecuteAsync(db => db.SortedSetRemoveAsync(key, member.ToRedisValue(RedisManager.DefaultSerializeType)));
         }
 
         /// <summary>

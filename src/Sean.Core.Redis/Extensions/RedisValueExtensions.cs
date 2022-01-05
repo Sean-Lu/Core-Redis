@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Sean.Utility.Format;
-using Sean.Utility.Serialize;
+using Newtonsoft.Json;
 using StackExchange.Redis;
 
 namespace Sean.Core.Redis.Extensions
@@ -34,7 +33,7 @@ namespace Sean.Core.Redis.Extensions
                 case SerializeType.Binary:
                     return BinarySerializer.Serialize(model);
                 case SerializeType.Json:
-                    return JsonHelper.Serialize(model);//RedisValue.Unbox(xxx);
+                    return JsonConvert.SerializeObject(model);//RedisValue.Unbox(xxx);
                 default:
                     throw new NotSupportedException($"Not yet supported for serialize type [{serializeType}]");
             }
@@ -71,7 +70,7 @@ namespace Sean.Core.Redis.Extensions
                 case SerializeType.Binary:
                     return BinarySerializer.Deserialize<T>(value);
                 case SerializeType.Json:
-                    return JsonHelper.Deserialize<T>(value);
+                    return JsonConvert.DeserializeObject<T>(value);
                 default:
                     throw new NotSupportedException($"Not yet supported for serialize type [{serializeType}]");
             }
