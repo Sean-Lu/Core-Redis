@@ -4,88 +4,79 @@ using System.Linq;
 using Newtonsoft.Json;
 using StackExchange.Redis;
 
-namespace Sean.Core.Redis.Extensions
+namespace Sean.Core.Redis.Extensions;
+
+/// <summary>
+/// Extension of <see cref="RedisValue"/>
+/// </summary>
+public static class RedisValueExtensions
 {
     /// <summary>
-    /// Extension of <see cref="RedisValue"/>
+    /// Convert to <see cref="RedisValue"/>
     /// </summary>
-    public static class RedisValueExtensions
+    /// <typeparam name="T"></typeparam>
+    /// <param name="model"></param>
+    /// <param name="serializeType">Serialization type</param>
+    /// <returns></returns>
+    public static RedisValue ToRedisValue<T>(this T model, SerializeType serializeType = SerializeType.Json)
     {
-        private static readonly BinarySerializer BinarySerializer = new BinarySerializer();
+        if (model == null)
+            return default;
 
-        /// <summary>
-        /// Convert to <see cref="RedisValue"/>
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="model"></param>
-        /// <param name="serializeType">Serialization type</param>
-        /// <returns></returns>
-        public static RedisValue ToRedisValue<T>(this T model, SerializeType serializeType = SerializeType.Json)
+        if (model is string)
+            return model as string;
+
+        return serializeType switch
         {
-            if (model == null)
-                return default;
+            SerializeType.Binary => BinarySerializer.Serialize(model),
+            SerializeType.Json => JsonConvert.SerializeObject(model),
+            _ => throw new NotSupportedException($"Not yet supported for serialize type [{serializeType}]")
+        };
+    }
 
-            if (model is string)
-                return model as string;
+    /// <summary>
+    /// Convert to <see cref="RedisValue"/> array
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="model"></param>
+    /// <param name="serializeType">Serialization type</param>
+    /// <returns></returns>
+    public static RedisValue[] ToRedisValueArray<T>(this IList<T> model, SerializeType serializeType = SerializeType.Json)
+    {
+        return model?.Select(c => c.ToRedisValue(serializeType)).ToArray();
+    }
 
-            switch (serializeType)
-            {
-                case SerializeType.Binary:
-                    return BinarySerializer.Serialize(model);
-                case SerializeType.Json:
-                    return JsonConvert.SerializeObject(model);//RedisValue.Unbox(xxx);
-                default:
-                    throw new NotSupportedException($"Not yet supported for serialize type [{serializeType}]");
-            }
-        }
+    /// <summary>
+    /// Convert to model object
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="value"></param>
+    /// <param name="serializeType">Serialization type</param>
+    /// <returns></returns>
+    public static T ToModel<T>(this RedisValue value, SerializeType serializeType = SerializeType.Json)
+    {
+        if (!value.HasValue)
+            return default;
+        if (typeof(T) == typeof(string))
+            return (T)Convert.ChangeType(value, typeof(string));
 
-        /// <summary>
-        /// Convert to <see cref="RedisValue"/> array
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="model"></param>
-        /// <param name="serializeType">Serialization type</param>
-        /// <returns></returns>
-        public static RedisValue[] ToRedisValueArray<T>(this IList<T> model, SerializeType serializeType = SerializeType.Json)
+        return serializeType switch
         {
-            return model?.Select(c => c.ToRedisValue(serializeType)).ToArray();
-        }
+            SerializeType.Binary => BinarySerializer.Deserialize<T>(value),
+            SerializeType.Json => JsonConvert.DeserializeObject<T>(value),
+            _ => throw new NotSupportedException($"Not yet supported for serialize type [{serializeType}]")
+        };
+    }
 
-        /// <summary>
-        /// Convert to model object
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="value"></param>
-        /// <param name="serializeType">Serialization type</param>
-        /// <returns></returns>
-        public static T ToModel<T>(this RedisValue value, SerializeType serializeType = SerializeType.Json)
-        {
-            if (!value.HasValue)
-                return default;
-            if (typeof(T) == typeof(string))
-                return (T)Convert.ChangeType(value, typeof(string));
-
-            switch (serializeType)
-            {
-                case SerializeType.Binary:
-                    return BinarySerializer.Deserialize<T>(value);
-                case SerializeType.Json:
-                    return JsonConvert.DeserializeObject<T>(value);
-                default:
-                    throw new NotSupportedException($"Not yet supported for serialize type [{serializeType}]");
-            }
-        }
-
-        /// <summary>
-        /// Convert to model object list
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="value"></param>
-        /// <param name="serializeType">Serialization type</param>
-        /// <returns></returns>
-        public static List<T> ToModelList<T>(this RedisValue[] value, SerializeType serializeType = SerializeType.Json)
-        {
-            return value?.Select(item => ToModel<T>(item, serializeType)).ToList();
-        }
+    /// <summary>
+    /// Convert to model object list
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="value"></param>
+    /// <param name="serializeType">Serialization type</param>
+    /// <returns></returns>
+    public static List<T> ToModelList<T>(this RedisValue[] value, SerializeType serializeType = SerializeType.Json)
+    {
+        return value?.Select(item => ToModel<T>(item, serializeType)).ToList();
     }
 }

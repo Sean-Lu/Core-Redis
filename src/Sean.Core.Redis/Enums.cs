@@ -1,17 +1,16 @@
-﻿namespace Sean.Core.Redis
+﻿namespace Sean.Core.Redis;
+
+/// <summary>
+/// Serialization type
+/// </summary>
+public enum SerializeType
 {
     /// <summary>
-    /// Serialization type
+    /// Json format
     /// </summary>
-    public enum SerializeType
-    {
-        /// <summary>
-        /// Json format
-        /// </summary>
-        Json,
-        /// <summary>
-        /// Binary format
-        /// </summary>
-        Binary
-    }
+    Json,
+    /// <summary>
+    /// Binary format
+    /// </summary>
+    Binary
 }

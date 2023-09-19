@@ -5,15 +5,16 @@
 		<DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<Authors>Sean</Authors>
-		<Copyright>Copyright © 2019-2022 Sean</Copyright>
+		<Copyright>Copyright © 2019-2023 Sean</Copyright>
 		<Description>Redis client.</Description>
 		<Version>2.0.8</Version>
 		<PackageProjectUrl>https://github.com/Sean-Lu/Core-Redis</PackageProjectUrl>
+		<LangVersion>latest</LangVersion>
 	</PropertyGroup>
 
 	<ItemGroup>
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-		<PackageReference Include="StackExchange.Redis" Version="2.2.88" />
+		<PackageReference Include="StackExchange.Redis" Version="2.6.122" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'net461'">

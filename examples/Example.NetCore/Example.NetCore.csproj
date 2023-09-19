@@ -7,7 +7,7 @@
 
   <ItemGroup>
     <PackageReference Include="Sean.Core.Ioc" Version="1.0.3" />
-    <PackageReference Include="Sean.Utility" Version="2.1.0" />
+    <PackageReference Include="Sean.Utility" Version="2.1.4" />
   </ItemGroup>
 
   <ItemGroup>
