@@ -5,7 +5,7 @@ using Sean.Core.Redis.Extensions;
 
 namespace Sean.Core.Redis;
 
-public partial class RedisHelper
+public static partial class RedisHelper
 {
     #region Synchronization method
     /// <summary>

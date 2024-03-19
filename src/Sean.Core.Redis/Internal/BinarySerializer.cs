@@ -6,7 +6,7 @@ namespace Sean.Core.Redis;
 /// <summary>
 /// 二进制序列化\反序列化
 /// </summary>
-internal class BinarySerializer
+internal static class BinarySerializer
 {
     private static readonly BinaryFormatter _binaryFormatter = new BinaryFormatter();
 

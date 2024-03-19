@@ -30,7 +30,7 @@ public static class RedisValueExtensions
         {
             SerializeType.Binary => BinarySerializer.Serialize(model),
             SerializeType.Json => JsonConvert.SerializeObject(model),
-            _ => throw new NotSupportedException($"Not yet supported for serialize type [{serializeType}]")
+            _ => throw new NotSupportedException($"Unsupported serialize type: {serializeType}")
         };
     }
 
@@ -64,7 +64,7 @@ public static class RedisValueExtensions
         {
             SerializeType.Binary => BinarySerializer.Deserialize<T>(value),
             SerializeType.Json => JsonConvert.DeserializeObject<T>(value),
-            _ => throw new NotSupportedException($"Not yet supported for serialize type [{serializeType}]")
+            _ => throw new NotSupportedException($"Unsupported serialize type: {serializeType}")
         };
     }
 

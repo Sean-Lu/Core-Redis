@@ -10,7 +10,7 @@ namespace Sean.Core.Redis;
 /// <summary>
 /// Helper for redis cache (based on StackExchange.Redis: https://github.com/StackExchange/StackExchange.Redis)
 /// </summary>
-public partial class RedisHelper
+public static partial class RedisHelper
 {
     private static readonly ConcurrentDictionary<int, IDatabase> _dbCacheDic = new ConcurrentDictionary<int, IDatabase>();
 

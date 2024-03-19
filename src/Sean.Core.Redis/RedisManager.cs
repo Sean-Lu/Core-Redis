@@ -2,13 +2,13 @@
 using System.Configuration;
 using System.Linq;
 using StackExchange.Redis;
-#if NETSTANDARD
+#if !NETFRAMEWORK
 using Microsoft.Extensions.Configuration;
 #endif
 
 namespace Sean.Core.Redis;
 
-public class RedisManager
+public static class RedisManager
 {
     /// <summary>
     /// Obtain a redis connection instance (thread safety)
@@ -44,7 +44,7 @@ public class RedisManager
     private static readonly object _syncLock = new object();
 
     #region Initialization
-#if NETSTANDARD
+#if !NETFRAMEWORK
     /// <summary>
     /// 通过配置文件初始化
     /// </summary>

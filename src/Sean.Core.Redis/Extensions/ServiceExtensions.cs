@@ -1,4 +1,4 @@
-﻿#if NETSTANDARD
+﻿#if !NETFRAMEWORK
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 

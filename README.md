@@ -74,7 +74,7 @@ RedisManager.Initialize(new RedisClientOptions
 });
 ```
 
-- 使用依赖注入（推荐）
+- 使用依赖注入
 
 ```csharp
 services.AddRedis(configuration);

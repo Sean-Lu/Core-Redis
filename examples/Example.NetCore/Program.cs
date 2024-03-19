@@ -4,7 +4,6 @@ using Example.NetCore.Models;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
-using Sean.Core.Ioc;
 using Sean.Core.Redis;
 using Sean.Core.Redis.Extensions;
 using Sean.Utility.Contracts;
@@ -22,46 +21,23 @@ namespace Example.NetCore
 
         static void Main(string[] args)
         {
-            IocContainer.Instance.ConfigureServices((services, configuration) =>
+            IocContainer.ConfigureServices((services, configuration) =>
             {
-                services.AddTransient(typeof(ISimpleLogger<>), typeof(SimpleLocalLogger<>));// Logger 日志
+                services.AddTransient(typeof(ILogger<>), typeof(SimpleLocalLogger<>));
+
+                services.AddRedis(configuration);
+
+                //RedisManager.Options.ConnectTimeout = 5000;
+                //RedisManager.Options.SyncTimeout = 5000;
+                //RedisManager.Options.AsyncTimeout = 5000;
             });
 
             SimpleLocalLoggerBase.DateTimeFormat = time => time.ToLongDateTime();
 
-            _logger = IocContainer.Instance.GetService<ISimpleLogger<Program>>();//SimpleLocalLoggerManager.GetCurrentClassLogger();
+            _logger = IocContainer.GetService<ILogger<Program>>();
             _logger.LogInfo("Redis使用示例");
 
-            #region 1. Redis初始化
-
-            #region 方式1：不使用依赖注入
-            //// 示例1：
-            //var configuration = IocContainer.Instance.GetService<IConfiguration>();
-            //RedisManager.Initialize(configuration);
-
-            //// 示例2：
-            //RedisManager.Initialize(new RedisClientOptions
-            //{
-            //    EndPoints = "127.0.0.1:6379",
-            //    Password = string.Empty,
-            //    DefaultSerializeType = SerializeType.Json
-            //});
-            #endregion
-
-            #region 方式2：使用依赖注入（推荐）
-            IocContainer.Instance.ConfigureServices((services, configuration) =>
-            {
-                services.AddRedis(configuration);
-            });
-            #endregion
-
-            //RedisManager.Options.ConnectTimeout = 5000;
-            //RedisManager.Options.SyncTimeout = 5000;
-            //RedisManager.Options.AsyncTimeout = 5000;
-
-            #endregion
-
-            #region 2. Redis使用示例
+            #region Redis使用示例
 
             #region Redis EventHandler
             RedisManager.Instance.InternalError += InternalError;
